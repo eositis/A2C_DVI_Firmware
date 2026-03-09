@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Generate a colorized reference image for RM_CLAMP comparison.
-Based on the bitmap_actual layout: 16 vertical color bars + text "012345678911111", "012345", "]"
+Test pattern: 16 vertical LORES color bars (colors 1-16) + text lines.
+Canonical source: assets/applesoft_color_test.bas
 Uses Apple IIgs LORES palette sRGB values. Output saved to assets/clamp_reference_expected.png
 Requires: pip install Pillow
 """

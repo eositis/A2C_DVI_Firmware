@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Version bump to 1.8.5-eo.
-- **RM_CLAMP color mapping**: `clamp_improved_lut.py` now uses sRGB-space nearest-neighbor matching instead of TMDS-space weighted L2. Colors should better match the expected LORES palette and reduce striations in solid blocks.
+- **RM_CLAMP color mapping**: `clamp_improved_lut.py` now uses sRGB-space nearest-neighbor matching instead of TMDS-space weighted L2. Phase-invariant mapping (i and i^0x100 share the same output) eliminates striations in solid color bars.
 
 ### Added
 - `tools/generate_clamp_reference.py` — generates colorized reference image (`assets/clamp_reference_expected.png`) for RM_CLAMP comparison, using Apple II LORES palette sRGB values.

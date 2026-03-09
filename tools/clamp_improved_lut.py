@@ -63,12 +63,21 @@ def main():
     clamp_g = all_hex[2048:2560]   # 8to3 green (after clamp_improved)
     clamp_b = all_hex[2560:3072]   # 8to3 blue
 
+    # Phase-invariant: oddness bit (0x100) alternates every 8 pixels. To avoid striations,
+    # both phases (i and i^0x100) must map to the same improved color. Use averaged
+    # sRGB of both 8to3 outputs to pick one consistent color per base pattern.
     out_r, out_g, out_b = [], [], []
     for i in range(512):
-        # Convert 8to3 TMDS output to sRGB for perceptual matching
-        sr = tmds_to_srgb(clamp_r[i])
-        sg = tmds_to_srgb(clamp_g[i])
-        sb = tmds_to_srgb(clamp_b[i])
+        i_other = i ^ 0x100  # phase pair
+        sr1 = tmds_to_srgb(clamp_r[i])
+        sg1 = tmds_to_srgb(clamp_g[i])
+        sb1 = tmds_to_srgb(clamp_b[i])
+        sr2 = tmds_to_srgb(clamp_r[i_other])
+        sg2 = tmds_to_srgb(clamp_g[i_other])
+        sb2 = tmds_to_srgb(clamp_b[i_other])
+        sr = (sr1 + sr2) / 2
+        sg = (sg1 + sg2) / 2
+        sb = (sb1 + sb2) / 2
         best_j = 0
         best_d = float("inf")
         for j, (ir, ig, ib) in enumerate(IMPROVED_SRGB):
