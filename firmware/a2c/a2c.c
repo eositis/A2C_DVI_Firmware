@@ -1288,8 +1288,8 @@ static void DELAYED_COPY_CODE(render_a2c_full_line)(a2c_render_mode_mode_t rende
 #endif      //  NO_NTSC_LUT
     else if ((render_mode == RM_CLAMP) || (render_mode == RM_NTSC))
     {
-        //  RM_CLAMP: 9-bit dot pattern -> improved IIgs LORES palette (tmds_lores_improved).
-        //  RM_NTSC (when NO_NTSC_LUT): 9-bit clamped LUT.
+        //  RM_CLAMP: precomputed improved IIgs LORES palette (clamp_improved_*), all in RAM.
+        //  RM_NTSC (when NO_NTSC_LUT): 9-bit clamped LUT (8to3). Same 3-lookup path.
         uint oddness = 0;
         uint dot_count = 2;
 
@@ -1313,10 +1313,9 @@ static void DELAYED_COPY_CODE(render_a2c_full_line)(a2c_render_mode_mode_t rende
 
                     if (render_mode == RM_CLAMP)
                     {
-                        uint8_t idx = clamp_to_improved_index[dot_pattern];
-                        *(tmdsbuf_red++)   = tmds_lores_improved[idx * 3 + 0];
-                        *(tmdsbuf_green++) = tmds_lores_improved[idx * 3 + 1];
-                        *(tmdsbuf_blue++)  = tmds_lores_improved[idx * 3 + 2];
+                        *(tmdsbuf_red++)   = clamp_improved_red[dot_pattern];
+                        *(tmdsbuf_green++) = clamp_improved_green[dot_pattern];
+                        *(tmdsbuf_blue++)  = clamp_improved_blue[dot_pattern];
                     }
                     else
                     {

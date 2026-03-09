@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # firmware version
-set(FW_VERSION "1.8.4-eo")
+set(FW_VERSION "1.8.5-eo")
 message(STATUS "Building firmware version ${FW_VERSION}")
 
 option(FEATURE_PICO2 "Build project for PICO2 (RP2350) instead of original PICO (RP2040)" OFF)
@@ -335,4 +335,12 @@ pico_add_extra_outputs(${BINARY_NAME})
 
 # use platform-specific linker script
 pico_set_linker_script(${BINARY_NAME} ${A2DVI_LINK_SCRIPT})
+
+# copy UF2 to Releases folder after build
+add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE_DIR:${BINARY_NAME}>/${BINARY_NAME}.uf2
+        ${CMAKE_CURRENT_SOURCE_DIR}/Releases/${BINARY_NAME}.uf2
+    COMMENT "Copying ${BINARY_NAME}.uf2 to Releases/"
+)
 
