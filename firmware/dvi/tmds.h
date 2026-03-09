@@ -120,6 +120,8 @@ extern uint32_t tmds_mono_pixel_pair[4*3*3];
 // TMDS data for a duplicated color pixel ("bit balanced" double pixels).
 // 16 entries, matching the LORES color palette
 extern uint32_t tmds_lorescolor[3*16];
+// Improved IIgs LORES palette (for A2C RM_CLAMP remap)
+extern const uint32_t tmds_lores_improved[3*16];
 
 extern uint32_t tmds_hires_color_patterns_red[2*256];
 extern uint32_t tmds_hires_color_patterns_green[2*256];

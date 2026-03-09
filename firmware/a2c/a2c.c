@@ -1288,7 +1288,8 @@ static void DELAYED_COPY_CODE(render_a2c_full_line)(a2c_render_mode_mode_t rende
 #endif      //  NO_NTSC_LUT
     else if ((render_mode == RM_CLAMP) || (render_mode == RM_NTSC))
     {
-        //  We are rendering using a 9 bit (NUM_CAP 8 to 3, Clamped) NTSC style color LUT
+        //  RM_CLAMP: 9-bit dot pattern -> improved IIgs LORES palette (tmds_lores_improved).
+        //  RM_NTSC (when NO_NTSC_LUT): 9-bit clamped LUT.
         uint oddness = 0;
         uint dot_count = 2;
 
@@ -1308,13 +1309,21 @@ static void DELAYED_COPY_CODE(render_a2c_full_line)(a2c_render_mode_mode_t rende
             {
                 if (dot_count < (32 * 18))      //  buffer is 18 32-bit dots
                 {
-                    //  Render DHGR, this inner loop is very timing dependant, too slow and hdmi breaks up
                     uint dot_pattern = oddness | ((dots >> 24) & 0xff);                                 //  Total of 9 bits
 
-                    *(tmdsbuf_red++)   = tmds_hgrdecode8to3_LUT_color_patterns_red[dot_pattern];
-                    *(tmdsbuf_green++) = tmds_hgrdecode8to3_LUT_color_patterns_green[dot_pattern];
-                    *(tmdsbuf_blue++)  = tmds_hgrdecode8to3_LUT_color_patterns_blue[dot_pattern];
-                    
+                    if (render_mode == RM_CLAMP)
+                    {
+                        uint8_t idx = clamp_to_improved_index[dot_pattern];
+                        *(tmdsbuf_red++)   = tmds_lores_improved[idx * 3 + 0];
+                        *(tmdsbuf_green++) = tmds_lores_improved[idx * 3 + 1];
+                        *(tmdsbuf_blue++)  = tmds_lores_improved[idx * 3 + 2];
+                    }
+                    else
+                    {
+                        *(tmdsbuf_red++)   = tmds_hgrdecode8to3_LUT_color_patterns_red[dot_pattern];
+                        *(tmdsbuf_green++) = tmds_hgrdecode8to3_LUT_color_patterns_green[dot_pattern];
+                        *(tmdsbuf_blue++)  = tmds_hgrdecode8to3_LUT_color_patterns_blue[dot_pattern];
+                    }
                     dots <<= 2;
                     dot_count = dot_count + 2;
                     oddness ^= 0x100;
